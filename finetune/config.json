@@ -1,0 +1,51 @@
+{
+  "github_token": "your_github_token_here",
+  "training": {
+    "model_name": "deepseek-ai/deepseek-coder-1.3b-base",
+    "num_epochs": 3,
+    "batch_size": 4,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 2e-4,
+    "warmup_steps": 100,
+    "max_seq_length": 2048,
+    "save_steps": 500,
+    "eval_steps": 500,
+    "logging_steps": 100,
+    "save_total_limit": 3,
+    "early_stopping_patience": 3,
+    "early_stopping_threshold": 0.001
+  },
+  "lora": {
+    "r": 16,
+    "lora_alpha": 32,
+    "lora_dropout": 0.1,
+    "target_modules": [
+      "q_proj",
+      "v_proj", 
+      "k_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ]
+  },
+  "data": {
+    "data_dir": "../collected_contracts",
+    "vulnerability_cases_dir": "../vulnerability_cases",
+    "output_dir": "processed_data",
+    "train_ratio": 0.8,
+    "val_ratio": 0.1,
+    "test_ratio": 0.1
+  },
+  "inference": {
+    "max_length": 1024,
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "do_sample": true
+  },
+  "wandb": {
+    "project": "blockchain-coder-finetune",
+    "name": "deepseek-coder-1.3b-blockchain",
+    "tags": ["deepseek-coder", "blockchain", "finetune"]
+  }
+} 
