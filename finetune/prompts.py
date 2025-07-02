@@ -1,21 +1,21 @@
-USER_PROMPTS = {
+SYSTEM_PROMPTS = {
     "solidity": {
-        "security_audit": "请对以下Solidity智能合约进行安全审计，识别潜在的安全漏洞：\n\n",
-        "vulnerability_fix": "请修复以下Solidity智能合约中的安全漏洞：\n\n",
-        "code_explanation": "请解释以下Solidity智能合约的功能和潜在风险：\n\n",
-        "best_practices": "请分析以下Solidity智能合约，并提供最佳实践建议：\n\n",
+        "security_audit": "请你担任Solidity安全审计专家，对以下智能合约进行**全面安全分析**，识别潜在漏洞（如重入攻击、整数溢出、访问控制问题等），并简要说明每个问题的影响及修复建议：\n\n",
+        "vulnerability_fix": "请你修复以下Solidity智能合约中的已知或潜在漏洞。请修改原始代码并在必要处添加注释，说明每处修改的目的和理由：\n\n",
+        "code_explanation": "请你逐步解释以下Solidity合约的核心功能、关键逻辑和可能的安全风险。建议包括函数职责、重要状态变量及其作用：\n\n",
+        "best_practices": "请你从Solidity安全与性能最佳实践角度，对以下合约提出优化建议。请涵盖编码风格、Gas效率、安全性、模块化等方面：\n\n",
     },
     "rust": {
-        "security_audit": "请对以下Rust智能合约程序进行安全审计，识别潜在的安全漏洞：\n\n",
-        "vulnerability_fix": "请修复以下Rust智能合约程序中的安全漏洞：\n\n",
-        "code_explanation": "请解释以下Rust智能合约程序的功能和潜在风险：\n\n",
-        "best_practices": "请分析以下Rust智能合约程序，并提供最佳实践建议：\n\n",
+        "security_audit": "请你担任Rust智能合约安全专家，对以下合约代码进行**详细安全审计**。请识别逻辑缺陷、权限控制问题、内存安全等潜在风险，并提供修复建议：\n\n",
+        "vulnerability_fix": "请你修复以下Rust智能合约程序中的安全漏洞。请提供修改后的代码，并解释每项更改的安全意义：\n\n",
+        "code_explanation": "请详细解释以下Rust合约代码的结构与功能，并指出潜在的设计或实现上的安全隐患：\n\n",
+        "best_practices": "请你从Rust智能合约开发角度出发，分析以下代码是否符合最佳实践（如内存安全、错误处理、模块组织等），并提出改进建议：\n\n",
     },
     "vyper": {
-        "security_audit": "请对以下Vyper智能合约进行安全审计，识别潜在的安全漏洞：\n\n",
-        "vulnerability_fix": "请修复以下Vyper智能合约中的安全漏洞：\n\n",
-        "code_explanation": "请解释以下Vyper智能合约的功能和潜在风险：\n\n",
-        "best_practices": "请分析以下Vyper智能合约，并提供最佳实践建议：\n\n",
+        "security_audit": "请你担任Vyper安全专家，审计以下智能合约，找出常见漏洞（如重入、变量溢出、不安全外部调用等），并说明每个问题的严重性及修复方式：\n\n",
+        "vulnerability_fix": "请修复以下Vyper合约中存在的安全漏洞。请直接修改代码，并注释说明每处更改背后的安全考量：\n\n",
+        "code_explanation": "请你逐行解释以下Vyper合约的功能与作用，重点说明关键逻辑和任何可能存在的设计弱点：\n\n",
+        "best_practices": "请审查以下Vyper合约代码，指出与当前最佳实践不符的地方，并给出具体改进建议，包括可读性、安全性与Gas优化：\n\n",
     },
 }
 
