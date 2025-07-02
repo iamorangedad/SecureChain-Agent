@@ -1,0 +1,36 @@
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract SimpleBank {\n    mapping(address => uint) balances;\n\n    function deposit() public payable {\n        balances[msg.sender] += msg.value;\n    }\n\n    function withdraw(uint amount) public {\n        if (balances[msg.sender] >= amount) {\n            payable(msg.sender).call{value: amount}("");\n            balances[msg.sender] -= amount;\n        }\n    }\n}\n```",
+    "completion": "1. 重入攻击漏洞：`call` 发送资金后才更新余额，攻击者可以反复调用。\n   修复建议：采用 Checks-Effects-Interactions 模式，先更新余额再转账。\n\n2. 没有使用访问控制：任何人都能调用 withdraw，无权限机制。\n   修复建议：应添加合适的权限验证（如 onlyOwner）。"
+}
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract SimpleWallet {\n    address public owner;\n\n    constructor() {\n        owner = msg.sender;\n    }\n\n    function withdraw(uint amount) public {\n        require(msg.sender == owner, \"Not owner\");\n        (bool success, ) = msg.sender.call{value: amount}(\"\");\n        require(success, \"Transfer failed\");\n    }\n\n    receive() external payable {}\n}\n```",
+    "completion": "- 存在重入攻击风险：`call` 函数在状态更新之前执行，攻击者可利用重入合约多次提现。\n- 修复建议：采用 Checks-Effects-Interactions 模式，先更新状态后执行外部调用，或使用 `ReentrancyGuard`。"
+}
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract Airdrop {\n    mapping(address => bool) claimed;\n\n    function claim() public {\n        require(!claimed[msg.sender], \"Already claimed\");\n        payable(msg.sender).transfer(1 ether);\n        claimed[msg.sender] = true;\n    }\n\n    receive() external payable {}\n}\n```",
+    "completion": "- 存在重入攻击风险：用户在 `transfer` 后才被标记为已领取，攻击者可重入函数。\n- 修复建议：应先更新状态再执行转账。"
+}
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract Donation {\n    mapping(address => uint) public donations;\n\n    function donate() external payable {\n        donations[msg.sender] += msg.value;\n    }\n\n    function withdraw(uint amount) external {\n        require(donations[msg.sender] >= amount);\n        payable(msg.sender).transfer(amount);\n        donations[msg.sender] -= amount;\n    }\n}\n```",
+    "completion": "- 存在重入攻击风险：`transfer` 在状态更新之前调用。\n- 修复建议：将状态更新放在转账之前，或使用 `ReentrancyGuard`。"
+}
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract Timelock {\n    uint public unlockTime;\n\n    constructor(uint _time) {\n        unlockTime = _time;\n    }\n\n    function withdraw() external {\n        require(block.timestamp > unlockTime);\n        payable(msg.sender).transfer(address(this).balance);\n    }\n}\n```",
+    "completion": "- 时间戳依赖：使用 `block.timestamp` 作为控制逻辑，可能被矿工操控。\n- 修复建议：使用预言机（如 Chainlink）提供可信时间数据，或确保业务逻辑能容忍微小误差。"
+}
+{
+    "prompt": "请对以下Solidity智能合约进行安全审计，指出潜在漏洞并提供修复建议：\n\n```solidity\ncontract Token {\n    mapping(address => uint256) balances;\n\n    function transfer(address to, uint256 amount) public {\n        require(balances[msg.sender] >= amount);\n        balances[to] += amount;\n        balances[msg.sender] -= amount;\n    }\n}\n```",
+    "completion": "- 可能存在整数溢出问题：加减操作未做边界检查。\n- 修复建议：升级到 Solidity 0.8+，或使用 SafeMath 库防止溢出和下溢。"
+}
+{
+    "prompt": "请修复以下Solidity智能合约中的重入漏洞：\n\n```solidity\nfunction withdraw(uint amount) public {\n    if (balances[msg.sender] >= amount) {\n        payable(msg.sender).call{value: amount}("");\n        balances[msg.sender] -= amount;\n    }\n}\n```",
+    "completion": "```solidity\nfunction withdraw(uint amount) public {\n    require(balances[msg.sender] >= amount, \"Insufficient balance\");\n    balances[msg.sender] -= amount;\n    (bool success, ) = payable(msg.sender).call{value: amount}(\"\");\n    require(success, \"Transfer failed\");\n}\n```\n\n修改说明：先扣除余额再转账，防止重入攻击；增加返回值检查，确保安全性。"
+}
+{
+    "prompt": "请解释以下Solidity函数的功能与潜在风险：\n\n```solidity\nfunction burn(uint256 amount) public {\n    _burn(msg.sender, amount);\n}\n```",
+    "completion": "该函数允许调用者销毁自己账户中指定数量的代币，减少总供应量。\n\n潜在风险：未检查用户余额是否充足。建议在 `_burn` 内部或之前加入余额验证。"
+}
+{
+    "prompt": "请分析以下Rust合约中的安全隐患：\n\n```rust\n#[near_bindgen]\npub struct Contract {\n    pub value: u64,\n}\n\n#[near_bindgen]\nimpl Contract {\n    pub fn set_value(&mut self, v: u64) {\n        self.value = v;\n    }\n}\n```",
+    "completion": "1. 缺少访问控制：任何账户都可以调用 `set_value` 更改合约状态。\n   建议：添加 caller 校验，仅允许合约拥有者调用。\n\n2. 无事件记录：更改状态未触发事件，影响可追踪性。\n   建议：使用日志记录 value 更改事件。"
+}
